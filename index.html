@@ -1,0 +1,1357 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Devzuat’a Hoş Geldiniz</title>
+
+<!-- Aptos -->
+<link href="https://fonts.cdnfonts.com/css/aptos" rel="stylesheet">
+
+<style>
+  .top-bar {
+     position:fixed; top:0; left:0; right:0; height:64px; z-index:1000;
+  backdrop-filter:blur(12px);
+  background:rgba(10,46,168,.85); border-bottom:1px solid rgba(255,255,255,.2);
+  }
+
+  .top-bar-logo {
+    height: 48px;
+    filter: none;
+    mix-blend-mode: plus-lighter;
+    margin-left: 4px;
+  }
+@import url('https://fonts.cdnfonts.com/css/aptos');
+html {
+  scrollbar-width: none; /* Firefox */
+}
+html::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+body {
+  margin:0; font-family:'Aptos',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  color:var(--ink); background:linear-gradient(-45deg,#b8d0eb,#bcded8,#d9c8f1,#a6d6d1,#c8d3f5);
+  background-size:400% 400%; animation:wave 10s ease infinite;
+}
+
+  :root{ --font-dev:'Aptos',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif; }
+  html, body, h1,h2,h3,h4,h5,h6, p, a, li, ul, ol, small, strong, em, label, input, select, textarea, button, .btn, .cta-btn, .intro-nav a { font-family: var(--font-dev) !important; }
+
+  /* topbar theme button (next to Site Tercihleri) */
+  .topbar-theme-btn{ padding:6px 12px; border:1.5px solid white; border-radius:9999px; background:transparent; color:white; font-weight:500; font-size:.95rem; cursor:pointer; margin-left:10px; }
+  .topbar-theme-btn:hover{ background:white; color:#0701A2; }
+  body.dark-theme .topbar-theme-btn{ border-color:white; color:white; }
+  body.dark-theme .topbar-theme-btn:hover{ background:white; color:#0701A2; }
+@keyframes waveBackground {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.horizontal-scroll-container {
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  height: 100vh;
+  width: 100vw;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+
+.horizontal-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+.horizontal-scroll-container section {
+  flex: 0 0 100vw;
+  height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-wrapper {
+  width: 100%;
+  max-width: 100vw;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+  pointer-events: auto;
+  z-index: 10;
+  padding-bottom: 20px;
+  margin-top: 0px;
+}
+
+.section {
+  padding: 60px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  min-height: auto;       /* ekranın tamamını kapsasın */
+}
+.section-img {
+  width: auto;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: auto;
+  position: relative;
+  z-index: 2;
+  margin-top: 80px;
+}
+.section-img img {
+  max-width: 800px;
+  height: auto;
+  margin-top: 70px;
+  margin-bottom: 100px;
+  outline: 4px solid #ffffff;
+  border-radius: 99px;
+  overflow: hidden;
+  background-color: white;
+}
+
+
+
+/* Removed .section h1 and .section-img h3 styles */
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 120px;              /* 2) Görsel ve metin arasındaki boşluk arttı */
+  padding-left: 40px;
+  max-width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  margin-top: -60px;
+}
+
+.image-container {
+  width: 450px;    /* 3) Görselleri 1.5x büyüttük (400 → 600) */
+  flex-shrink: 0;
+  max-width: 450px;
+}
+
+.text-container {
+  flex: 1;
+  padding-left: 20px;
+  max-width: 600px;
+  flex-shrink: 0;
+}
+
+.feature .text-container h3{
+  font-size: 3.6rem;
+  color: #0701A2;
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0;
+  font-family: "Aptos", "Segoe UI", sans-serif;
+}
+
+.shine-container {
+  position: relative;
+  display: inline-block;     /* İçerik (img) kadar genişlik/yükseklik alsın */
+  overflow: hidden;
+  line-height: 0;            /* Satır boşluğu kaynaklı ekstra boşluğu kaldır */
+  border-radius: 24px;       /* Görselin köşesiyle birebir */
+}
+
+.shine-container img {
+  display: block;
+  width: 100%;               /* Görsel kendi oranında */
+  height: auto;
+  border-radius: inherit;    /* Container köşesine uyum */
+  object-fit: cover;
+}
+
+.feature-card {
+  background: transparent;
+  border-radius: 16px;
+  padding: 20px;
+  width: 80%;
+  max-width: 600px;
+  /* Center the card content horizontally and vertically */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+.feature-card img {
+  width: 300px;
+  height: auto;
+  margin-bottom: 15px;
+  border-radius: 24px;
+}
+.feature-card .shine-container { border-radius: 24px; }
+
+@keyframes sparkle {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(2); }
+}
+.feature-card h3 {
+  font-size: 3.8rem !important;
+  color: #0701A2;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+}
+@media (max-width: 768px) {
+  .feature-card {
+    width: 90%;
+  }
+  .feature {
+    flex-direction: column;
+    align-items: center;
+    max-width: none;
+    padding-left: 0;
+    gap: 40px;
+  }
+  .image-container {
+    width: 100%;
+  }
+  .text-container {
+    padding-left: 0;
+    padding-top: 15px;
+    text-align: center;
+    max-width: 100%;
+  }
+}
+
+.shine-container::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+}
+
+.shine-container.shine::after {
+  animation: shine 1s ease forwards;
+}
+
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+  100% {
+    left: 125%;
+  }
+}
+
+@keyframes autoScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-100% * 3)); }
+}
+
+
+.intro-wrapper .section-img h1 {
+  font-size: 4.2rem !important;
+  color: #0701A2;
+  font-weight: 700 !important;
+  font-family: 'Aptos', sans-serif;
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  white-space: normal;
+  max-width: 90vw;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.intro-wrapper .section-img h3 {
+  font-size: 2.8rem !important;
+  font-weight: 300 !important;
+  color: #0701A2;
+  font-family: 'Aptos', sans-serif;
+  text-align: center;
+}
+
+/* Added navigation styles */
+.intro-nav {
+  display: flex;
+  gap: 22px;
+  margin-left: 30px;
+  align-items: center;
+  font-family: 'Aptos', sans-serif;
+}
+
+.intro-nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.intro-nav a:hover {
+  color: #f0f0f0;
+}
+
+.cta-btn.topbar-login-btn {
+  padding: 6px 14px;
+  border: 1.5px solid white;
+  border-radius: 9999px;
+  background-color: transparent;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+  transition: all 0.3s ease;
+  font-family: 'Aptos', sans-serif;
+  font-size: 0.95rem;
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.cta-btn.topbar-login-btn:hover {
+  background-color: white;
+  color: #0701A2;
+  border-color: white;
+}
+</style>
+
+
+
+
+</head>
+<body class="light-theme">
+
+<div class="top-bar">
+  <div style="display: flex; align-items: center; height: 100%; justify-content: space-between; width: 100%; margin: 0 auto; padding-right: 10px;">
+   <a href="intropage.html"><img src="assets/nlogo.svg" alt="Devzuat Logo" class="top-bar-logo"></a>
+
+    <nav class="intro-nav" style="flex: 0.9; display: flex; justify-content: space-between; margin-left: 100px; margin-right: 0px;  align-items: center; font-family: 'Aptos', sans-serif;">
+      <a href="intropage.html">Devzuat Nedir?</a>
+      <a href="sunduklarimiz.html">Sunduklarımız</a>
+      <a href="planlarimiz.html">Planlarımız</a>
+      <a href="topluluk.html">Topluluk</a>
+      <a href="iletisim-destek.html">İletişim & Destek Alın</a>
+      <a href="hakkimizda.html">Hakkımızda</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
+ 
+    <div class="dropdown" style="position: relative; margin-left: 38px; margin-right: 0;">
+      <a href="#" class="dropdown-toggle">Site Tercihleri ▾</a>
+      <div class="dropdown-menu">
+        <!-- Çerezleri Yönet: Move to top, center-aligned -->
+        <div style="width:100%; display:flex; justify-content:center; align-items:center; margin-bottom: 32px;">
+          <button class="cookie-btn" style="margin: 0 auto;">Çerezleri Yönet</button>
+        </div>
+        <!-- Language Selection: Move to bottom, last section -->
+        <div style="margin-top: 32px;">
+          <label for="language-select" style="display: block; margin-bottom: 8px; font-weight: 500;">Dil Seçimi</label>
+          <select id="language-select" onchange="changeLanguage(this.value)" style="width: 100%; padding: 8px; border-radius: 10px; margin-bottom: 0;">
+            <option value="tr">Türkçe</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+            <option value="ru">Русский</option>
+            <option value="zh">中文</option>
+            <option value="ar">العربية</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button id="themeBtn" class="topbar-theme-btn" aria-label="Tema değiştir">🌙 Koyu</button>
+    <a href="loginpage.html" target="_blank" class="cta-btn topbar-login-btn" style="margin-left: auto; margin-right: 10px; align-self: center;">Oturum Aç / Kaydol</a>
+  </div>
+</div>
+
+<main class="horizontal-scroll-container">
+
+  <!-- Giriş Bölümü -->
+  <section class="slide">
+    <div class="intro-wrapper">
+      <div class="section-img">
+        <h1>Devzuat’a Hoş Geldiniz! </h1>
+        <h3>Türkiye'nin en kapsamlı hukuk platformu ile mevzuatlar,<br>resmi gazete ve akademik kaynaklar tek çatı altında!</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 Feature Slaytları -->
+  <section class="slide">
+    <div class="feature">
+      <div class="text-container">
+        <h3>Tüm mevzuatlara ve ders içeriklerine tek tıkla ulaşın!</h3>
+      </div>
+      <div class="image-container">
+        <div class="shine-container" data-delay="330"><img src="assets/mevzuat.png" alt="Tüm mevzuata ve ders içeriklerine tek tıkla ulaşın!"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="feature">
+      <div class="image-container">
+        <div class="shine-container" data-delay="330"><img src="assets/devcloud.png" alt="devCloud ile çizimleriniz ve notlarınız her zaman, her yerde!"></div>
+      </div>
+      <div class="text-container">
+        <h3>devCloud ile çalışmalarınız ve notlarınız her zaman,<br>her yerde sizinle!</h3>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="feature">
+      <div class="text-container">
+        <h3>Çeşitli ders içerikleri ve pratik notlarla sınavlara hazır olun!</h3>
+      </div>
+      <div class="image-container">
+        <div class="shine-container" data-delay="330"><img src="assets/pratiknot.png" alt="Her türlü ders içerikleri ve pratik notlarla sınavlara hazır olun!"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="feature">
+      <div class="image-container">
+        <div class="shine-container" data-delay="330"><img src="assets/prodev.png" alt="ProDev ile sınırsız arşiv, gelişmiş filtre ve hızlı arama keyfi!"></div>
+      </div>
+      <div class="text-container">
+        <h3>devPro ile sınırsız arşiv, gelişmiş filtre ve hızlı arama keyfini yaşayın!</h3>
+      </div>
+    </div>
+    
+  </section>
+
+</main>
+
+<!-- Menu Sections (vertical, visible, stacked) -->
+<section class="menu-section" id="devzuat-nedir" style="display: block;">
+  <div class="section">
+    <h1>Devzuat Nedir?</h1>
+    <p>Devzuat; mevzuatları, resmi belgeleri ve akademik kaynakları bir araya getiren kapsamlı bir platformdur.</p>
+  </div>
+</section>
+<section class="menu-section" id="sunduklarimiz" style="display: block;">
+  <div class="section">
+    <h1>Sunduklarımız</h1>
+    <p>Devzuat, hukuk profesyonellerine yönelik geniş içerik yelpazesi sunar: Resmi Gazete arşivi, mevzuat arama motoru, devCloud entegrasyonu ve daha fazlası.</p>
+  </div>
+</section>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const container = entry.target;
+      if (entry.isIntersecting) {
+        const delay = Number(container.getAttribute('data-delay') || 330);
+        setTimeout(() => {
+          container.classList.add("shine");
+          setTimeout(() => container.classList.remove("shine"), 1200);
+        }, delay);
+      } else {
+        // Görünürlükten çıkınca efekt sınıfını kaldır (bir dahaki girişte tekrar çalışsın)
+        container.classList.remove("shine");
+      }
+    });
+  }, { threshold: 0.6 });
+
+  document.querySelectorAll(".shine-container").forEach((container) => {
+    observer.observe(container);
+  });
+
+  const featureObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('show-feature');
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.feature').forEach(feature => {
+    featureObserver.observe(feature);
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const scrollContainer = document.querySelector('.horizontal-scroll-container');
+  const slides = document.querySelectorAll('.slide');
+  const button = document.querySelector('.bottom-cta-btn');
+  const dots = document.querySelectorAll('.progress-indicator .dot');
+  
+  let currentIndex = 0;
+  let buttonFinalized = false;
+
+  // Update button based on scroll position
+  scrollContainer.addEventListener('scroll', () => {
+    const scrollLeft = scrollContainer.scrollLeft;
+    const slideWidth = window.innerWidth;
+    const index = Math.round(scrollLeft / slideWidth);
+    
+    if (index !== currentIndex) {
+      currentIndex = index;
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
+
+      if (currentIndex === slides.length - 1 && !buttonFinalized) {
+        button.innerHTML = 'Hemen Başlayın <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 17l9-9" stroke-width="2"></path><polyline points="7 7 17 7 17 17" stroke-width="2" fill="none"></polyline></svg>';
+        button.setAttribute('href', 'planlarimiz.html');
+        buttonFinalized = true;
+      } else if (!buttonFinalized) {
+        button.innerHTML = 'Daha Fazlasını Görün';
+        button.setAttribute('href', '#');
+      }
+    }
+  });
+
+  button.innerHTML = 'Daha Fazlasını Görün';
+  button.setAttribute('href', '#');
+
+  function scrollToSlide(index) {
+    scrollContainer.scrollTo({
+      left: window.innerWidth * index,
+      behavior: 'smooth'
+    });
+  }
+
+  button.addEventListener('click', (e) => {
+    if (currentIndex < slides.length - 1 && !buttonFinalized) {
+      e.preventDefault(); // prevent navigation
+      currentIndex++;
+      scrollToSlide(currentIndex);
+
+      if (currentIndex === slides.length - 1) {
+        button.innerHTML = 'Hemen Başlayın <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 17l9-9" stroke-width="2"></path><polyline points="7 7 17 7 17 17" stroke-width="2" fill="none"></polyline></svg>';
+        button.setAttribute('href', 'planlarimiz.html');
+        buttonFinalized = true;
+      } else {
+        button.innerHTML = 'Daha Fazlasını Görün';
+        button.setAttribute('href', '#');
+      }
+    }
+  });
+
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+      currentIndex = index;
+      scrollToSlide(currentIndex);
+
+      dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
+
+      if (currentIndex === slides.length - 1) {
+        button.innerHTML = 'Hemen Başlayın <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 17l9-9" stroke-width="2"></path><polyline points="7 7 17 7 17 17" stroke-width="2" fill="none"></polyline></svg>';
+        button.setAttribute('href', 'planlarimiz.html');
+        buttonFinalized = true;
+      } else {
+        button.innerHTML = 'Daha Fazlasını Görün';
+        button.setAttribute('href', '#');
+        buttonFinalized = false;
+      }
+    });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const toggle = document.querySelector('.dropdown-toggle');
+  const menu = document.querySelector('.dropdown-menu');
+
+  let isOpen = false;
+
+  toggle.addEventListener('click', (e) => {
+    e.preventDefault();
+    isOpen = !isOpen;
+    menu.style.display = isOpen ? 'block' : 'none';
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+      isOpen = false;
+      menu.style.display = 'none';
+    }
+  });
+});
+
+
+
+</script>
+
+<style>
+@keyframes waveBackground {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+body.light-theme {
+  background: linear-gradient(-45deg,
+    #D4E6FF,  /* light azure */
+    #B9D9FF,  /* brighter sky */
+    #C8F2FF,  /* cyan tint */
+    #E2F1FF,  /* ice blue */
+    #F6FBFF,  /* near white */
+    #E7ECFF   /* lavender blue */
+  );
+  background-size: 400% 400%;
+  animation: waveBackground 8s ease-in-out infinite;
+  color: #0701A2;
+}
+
+body.dark-theme {
+  background: linear-gradient(-45deg, #131083, #1f70b7, #313eec, #0026fd);
+  background-size: 400% 400%;
+  animation: waveBackground 5s ease infinite;
+  color: white;
+}
+
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme p {
+  color: white !important;
+}
+
+body.dark-theme .topbar-login-btn {
+  border-color: white;
+  color: white;
+}
+
+body.dark-theme .topbar-login-btn:hover {
+  background-color: white;
+  color: #0701A2;
+}
+
+body, .topbar-login-btn, h1, h2, h3, p {
+  transition: all 0.5s ease;
+}
+  .bottom-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    margin: -20px auto 0 auto;
+    padding: 4px 20px;
+    background-color: transparent;
+    color: #0701A2;
+    border: 1.5px solid #0701A2;
+    border-radius: 9999px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1.2rem;
+    font-weight: 340;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+    box-shadow: none;
+    max-width: 320px;
+    justify-content: center;
+    width: 200px;
+    height: 38px;
+    line-height: 1;
+  }
+
+  .bottom-cta-btn:hover,
+  .bottom-cta-btn:focus {
+    background-color: #0701A2;
+    color: #fff;
+  }
+
+  .bottom-cta-btn:focus:not(:hover) {
+    background-color: transparent;
+    color: #0701A2;
+  }
+
+  .bottom-cta-btn:active {
+    background-color: #0701A2;
+    color: #fff;
+  }
+  .bottom-cta-btn .arrow {
+    margin-left: 8px;
+    display: inline-flex;
+    vertical-align: middle;
+  }
+
+  /* Icon styling for SVG inside button */
+  .bottom-cta-btn svg {
+    width: 1.25em;
+    height: 1.25em;
+    fill: currentColor;
+  }
+
+/* Dark theme overrides for bottom-cta-btn */
+body.dark-theme .bottom-cta-btn {
+  background-color: transparent;
+  color: white;
+  border-color: white;
+}
+
+body.dark-theme .bottom-cta-btn:hover {
+  background-color: white;
+  color: #0701A2;
+}
+
+body.dark-theme .bottom-cta-btn:focus:not(:hover) {
+    background-color: transparent;
+    color: #ffffff;
+  }
+
+
+
+.bottom-cta-btn-wrapper {
+  position: absolute;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.progress-indicator {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 99;
+}
+
+
+
+  .dot {
+    width: 20px;
+    height: 8px;
+    background-color: transparent;
+    border: 1px solid #0701A2;
+    border-radius: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    pointer-events: auto;
+    cursor: default;
+  }
+
+  .dot.active {
+    background-color: #0701A2;
+  }
+
+  body.dark-theme .dot {
+    background-color: transparent;
+    border-color: white;
+  }
+
+  body.dark-theme .dot.active {
+    background-color: white;
+  }
+
+/* New styles to avoid conflicts */
+.intro-wrapper .section-img h1 {
+  font-size: 4.2rem;
+  color: #0701A2;
+  font-weight: 700;
+  font-family: 'Aptos', sans-serif;
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 30px;
+  margin-top: -40px;
+  white-space: normal;
+  max-width: 90vw;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.intro-wrapper .section-img h3,
+.welcomeSubtitle {
+  font-size: 2rem;
+  font-weight: 300;
+  color: #0701A2;
+  font-family: 'Aptos', sans-serif;
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 50px;
+  white-space: normal;
+  width: 100%;
+  max-width: 90vw;
+  padding: 0 24px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.4;
+}
+
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    color: #0701A2;
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    padding: 32px;
+    min-width: 280px;
+    max-width: 340px;
+    min-height: 0;
+    z-index: 1001;
+    box-shadow: 0 4px 16px #0701A2;
+    font-family: 'Aptos', sans-serif;
+    text-align: center;
+    margin-top: -20px;
+  }
+  body.dark-theme .dropdown-menu {
+    background-color: #0701A2;
+    color: white;
+    border: 1px solid #0701A2;
+  }
+#theme-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #0701A2;
+  border-radius: 9999px;
+  padding: 6px;
+  cursor: pointer;
+  background-color: #f5f5f5;
+}
+
+#theme-toggle div {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  font-family: 'Aptos', sans-serif;
+}
+
+#dark-option {
+  background-color: #0701A2;
+  color: white;
+  font-family: 'Aptos', sans-serif;
+}
+
+#light-option {
+  background-color: white;
+  color: #0701A2;
+  font-family: 'Aptos', sans-serif;
+}
+
+.dropdown-toggle {
+  color: white ;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-right: 0;
+}
+
+
+body.dark-theme .dropdown-menu button {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+}
+
+body.dark-theme .dropdown-menu button:hover {
+  background-color: white;
+  color: #1a1a2e;
+}
+
+body.dark-theme .dropdown-menu select {
+  background-color: #0701A2;
+  color: white;
+  border: 1px solid white;
+}
+
+  body.dark-theme .dropdown-menu label {
+    color: white;
+  }
+
+  .dropdown-menu label {
+    font-size: 1.1rem;
+    font-family: 'Aptos', sans-serif;
+    display: block;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+/* Cookie button styles */
+#cookie-button,
+.cookie-btn {
+  width: 100%;
+  display: block;
+  text-align: center;
+  border-radius: 9999px;
+  font-family: 'Aptos', sans-serif;
+  padding: 10px 0;
+  font-size: 1rem;
+  background-color: transparent;
+  border: 1.5px solid #0701A2;
+  color: #0701A2;
+  transition: background 0.3s, color 0.3s;
+  cursor: pointer;
+  margin-top: 24px;
+}
+
+#cookie-button:hover,
+.cookie-btn:hover {
+  background-color: #0701A2;
+  color: white;
+}
+
+body.dark-theme #cookie-button,
+body.dark-theme .cookie-btn {
+  border-color: white;
+  color: white;
+}
+
+body.dark-theme #cookie-button:hover,
+body.dark-theme .cookie-btn:hover {
+  background-color: white;
+  color: #0701A2;
+}
+
+/* Dropdown menu form controls spacing and width */
+.dropdown-menu select,
+.dropdown-menu button,
+.dropdown-menu #theme-toggle {
+  margin-bottom: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#theme-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #0701A2;
+  border-radius: 9999px;
+  padding: 6px;
+  cursor: pointer;
+  background-color: #f5f5f5;
+}
+
+#theme-toggle div {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+#dark-option {
+  background-color: #0701A2;
+  color: white;
+}
+
+#light-option {
+  background-color: white;
+  color: #0701A2;
+}
+
+
+.dropdown-toggle {
+  color: white !important;
+  text-decoration: none !important;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-right: 0;
+}
+
+
+</style>
+
+<div class="bottom-cta-btn-wrapper">
+  <a href="planlarimiz.html" class="bottom-cta-btn">
+    Daha Fazlasını Görün
+  </a>
+</div>
+
+<div class="progress-indicator">
+  <span class="dot active"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+</div>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const toggle = document.querySelector('.dropdown-toggle');
+  const menu = document.querySelector('.dropdown-menu');
+
+  let isVisible = false;
+
+  toggle.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation(); // Prevent click from bubbling
+    isVisible = !isVisible;
+    menu.style.display = isVisible ? 'block' : 'none';
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+      isVisible = false;
+      menu.style.display = 'none';
+    }
+  });
+});
+
+
+// New theme logic: system preference, override, and resync
+(function () {
+  const THEME_KEY = 'userThemeOverride';
+  let userOverride = localStorage.getItem(THEME_KEY);
+  const themeBtn = document.getElementById('themeBtn');
+
+  const applyTheme = (theme) => {
+    document.documentElement.setAttribute('data-theme', theme);
+    // Optionally update body class for legacy CSS
+    document.body.classList.toggle('dark-theme', theme === 'dark');
+    document.body.classList.toggle('light-theme', theme === 'light');
+    // Visually mark the selected toggle
+    const darkBtn = document.getElementById('dark-option');
+    const lightBtn = document.getElementById('light-option');
+    if (darkBtn && lightBtn) {
+      if (theme === 'dark') {
+        darkBtn.style.backgroundColor = '#0701A2';
+        darkBtn.style.color = 'white';
+        lightBtn.style.backgroundColor = 'white';
+        lightBtn.style.color = '#0701A2';
+      } else {
+        lightBtn.style.backgroundColor = '#0701A2';
+        lightBtn.style.color = 'white';
+        darkBtn.style.backgroundColor = 'white';
+        darkBtn.style.color = '#0701A2';
+      }
+    }
+    if (themeBtn){
+      themeBtn.textContent = theme === 'dark' ? '☀️ Açık' : '🌙 Koyu';
+      themeBtn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+    }
+  };
+
+  const getSystemTheme = () =>
+    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+  const initTheme = () => {
+    const systemTheme = getSystemTheme();
+    if (userOverride) {
+      applyTheme(userOverride);
+    } else {
+      applyTheme(systemTheme);
+    }
+  };
+
+  const darkBtn = document.getElementById('dark-option');
+  const lightBtn = document.getElementById('light-option');
+
+  if (darkBtn && lightBtn) {
+    darkBtn.addEventListener('click', () => {
+      applyTheme('dark');
+      localStorage.setItem(THEME_KEY, 'dark');
+      userOverride = 'dark';
+    });
+
+    lightBtn.addEventListener('click', () => {
+      applyTheme('light');
+      localStorage.setItem(THEME_KEY, 'light');
+      userOverride = 'light';
+    });
+  }
+
+  if (themeBtn){
+    themeBtn.addEventListener('click', () => {
+      const next = document.body.classList.contains('dark-theme') ? 'light' : 'dark';
+      applyTheme(next);
+      localStorage.setItem(THEME_KEY, next);
+      userOverride = next;
+    });
+  }
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    const systemTheme = e.matches ? 'dark' : 'light';
+    if (!userOverride) {
+      applyTheme(systemTheme);
+    } else if (userOverride === systemTheme) {
+      localStorage.removeItem(THEME_KEY);
+      userOverride = null;
+      applyTheme(systemTheme);
+    }
+  });
+
+  initTheme();
+})();
+
+</script>
+
+<script src="js/lang.js" defer></script>
+
+</section>
+
+<script>
+  function changeLanguage(lang) {
+    const translations = {
+      en: {
+        welcomeTitle: "Welcome to Devzuat!",
+        welcomeSubtitle: "With Turkey's most comprehensive legal platform, regulations, official gazette, and academic resources are all in one place!",
+        feature1: "Access all legislation and course content with one click!",
+        feature2: "With devCloud, your work and notes are with you anytime, anywhere!",
+        feature3: "Be prepared for exams with diverse course materials and practical notes!",
+        feature4: "Enjoy unlimited archive, advanced filters, and fast search with devPro!"
+      },
+      tr: {
+        welcomeTitle: "Devzuat’a Hoş Geldiniz!",
+        welcomeSubtitle: "Türkiye'nin en kapsamlı hukuk platformu ile mevzuatlar, resmi gazete ve akademik kaynaklar tek çatı altında!",
+        feature1: "Tüm mevzuatlara ve ders içeriklerine tek tıkla ulaşın!",
+        feature2: "devCloud ile çalışmalarınız ve notlarınız her zaman, her yerde sizinle!",
+        feature3: "Çeşitli ders içerikleri ve pratik notlarla sınavlara hazır olun!",
+        feature4: "devPro ile sınırsız arşiv, gelişmiş filtre ve hızlı arama keyfini yaşayın!"
+      }
+    };
+
+    const t = translations[lang];
+    if (!t) return;
+
+    document.querySelector('.section-img h1').textContent = t.welcomeTitle;
+    document.querySelector('.section-img h3').innerHTML = t.welcomeSubtitle;
+    document.querySelectorAll('.feature .text-container h3')[0].textContent = t.feature1;
+    document.querySelectorAll('.feature .text-container h3')[1].innerHTML = t.feature2;
+    document.querySelectorAll('.feature .text-container h3')[2].textContent = t.feature3;
+    document.querySelectorAll('.feature .text-container h3')[3].textContent = t.feature4;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+.cookie-banner {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  height: 190px;
+  background: #ffffff ;
+  backdrop-filter: blur(10px); /* Cam efekti */
+  -webkit-backdrop-filter: blur(10px); /* Safari için */
+  color: #0701A2;
+  border-radius: 12px;
+  padding: 10px;
+  z-index: 1000;
+  font-family: 'Aptos', sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cookie-close-btn {
+  position: absolute;
+  top: -0px;
+  left: 4px;
+  background: transparent;
+  border: none;
+  font-size: 19px;
+  color: #9997cb;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  font-weight: bold;
+}
+
+body.dark-theme .cookie-close-btn {
+  color: rgb(149, 147, 147);
+}
+
+.cookie-message {
+  margin-bottom: -20px;
+  margin-top: 8px;
+  line-height: 1.3;
+  font-size: 1rem;
+  font-weight:570 ;
+
+}
+
+
+.cookie-main-btn {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 1rem;
+  font-weight: 300;
+  border: 1.5px solid #0701A2;
+  border-radius: 9999px;
+  background-color: #0701A2;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.cookie-main-btn:hover {
+  background-color: #ffffff;
+  color: #0701A2;
+}
+
+.cookie-subgroup {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  width: 100%;
+}
+
+.cookie-sub-btn {
+  flex: 1;
+  padding: 4px 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1.5px solid #0701A2;
+  border-radius: 9999px;
+  background-color: transparent;
+  color: #0701A2;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: -24px;
+}
+
+.cookie-sub-btn:hover {
+  background-color: #bfe4e1;
+  color: #0701A2;
+}
+
+.cookie-timer-text {
+  font-size: 0.9rem;
+  line-height: 1.2;
+  margin: 0;
+  width: 100%;
+}
+
+/* Dark theme */
+body.dark-theme .cookie-banner {
+  background: rgba(255, 255, 255, 0.06); /* Renksiz, çok hafif beyaz buğu */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: white;
+  border: 1.2px solid rgba(255, 255, 255, 0.2); /* İnce, soft kenarlık */
+}
+
+body.dark-theme .cookie-main-btn {
+  background-color: #ffffff;
+  color: #0701A2;
+  border-color: white;
+}
+body.dark-theme .cookie-main-btn:hover {
+  background-color:#0701A2;
+  color: #ffffff;
+}
+body.dark-theme .cookie-sub-btn {
+  background-color: transparent;
+  color: #ffffff;
+  border-color: white;
+}
+body.dark-theme .cookie-sub-btn:hover {
+  background-color: #0701A2;
+  color: white;
+}
+
+
+  .topbar-theme-btn{ padding:6px 12px; border:1.5px solid white; border-radius:9999px; background:transparent; color:white; font-weight:500; font-size:.95rem; cursor:pointer; margin-left:24px; margin-right:-70px; width:90px; display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; box-sizing:border-box; }
+
+
+</style>
+
+
+<!-- Cookie Banner -->
+<div class="cookie-banner" id="cookie-banner">
+  <button class="cookie-close-btn" onclick="document.getElementById('cookie-banner').style.display='none';">&times;</button>
+  <p class="cookie-message">
+    Deneyiminizi iyileştirmek için sitemizde çerezleri kullanıyoruz. Çerez politikasını site tercihleri kısmından görebilirsiniz.
+  </p>
+
+  <div class="cookie-buttons">
+    <button class="cookie-main-btn">Çerezlerin Tümünü Kabul Et</button>
+    <div class="cookie-subgroup">
+      <button class="cookie-sub-btn">Özelleştir</button>
+      <button class="cookie-sub-btn">Tümünü Reddet</button>
+    </div>
+  </div>
+
+  <p class="cookie-timer-text">
+    Bu bilgilendirme <span id="cookie-timer">10</span> sn içerisinde kapanacaktır.<br>
+  </p>
+</div>
+
+<script>
+  let seconds = 10;
+  const countdownElement = document.getElementById("countdown");
+  const banner = document.getElementById("cookie-banner");
+
+  const timer = setInterval(() => {
+    seconds--;
+    countdownElement.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(timer);
+      banner.style.display = "none";
+    }
+  }, 1000);
+</script>
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const banner = document.getElementById("cookie-banner");
+    const timer = document.getElementById("cookie-timer");
+    let secondsLeft = 10;
+
+    const countdown = setInterval(() => {
+      secondsLeft--;
+      timer.textContent = secondsLeft;
+
+      if (secondsLeft <= 0) {
+        clearInterval(countdown);
+        banner.style.display = "none";
+      }
+    }, 1000);
+  });
+</script>
+
+
+
+</body>
+</html>
+
+
