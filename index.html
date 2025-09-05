@@ -23,6 +23,8 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%}
+    /* Prevent horizontal scroll on mobile */
+    html, body { overflow-x: hidden; }
     body{
       margin:0;
       font-family:"Montserrat",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -108,6 +110,7 @@
       font-weight:700; border-radius:14px;
       padding:14px 22px; font-size:17px; transition:.18s ease;
       display:inline-flex; align-items:center; gap:10px; text-decoration:none;
+      max-width:100%; flex-wrap:wrap; white-space:normal;
     }
     .btn-primary{background:var(--brand-orange); color:#fff}
     .btn-primary:hover{filter:brightness(0.95); transform:translateY(-1px); box-shadow:0 10px 24px rgba(242,106,33,.35)}
@@ -247,6 +250,12 @@
       margin-top: 32px;
       margin-bottom: 16px;
       font-weight: 800;
+    }
+
+    @media (max-width:480px){
+      .hero-inner{ padding:16px; }
+      .cta-row{ justify-content:flex-start; gap:10px; }
+      .cta-row .btn{ width:auto; max-width:100%; }
     }
   </style>
 </head>
