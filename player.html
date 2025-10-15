@@ -171,7 +171,6 @@
   </div>
 
 <script>
-  const timerEl = document.getElementById('timer');
   const openingText = document.getElementById('opening-text');
   const questionImage = document.getElementById('question-image');
 
@@ -290,5 +289,147 @@
     <button class="choice-btn" id="btnD" aria-label="Seçenek D">D</button>
     <button class="choice-btn send" id="sendAnswer" aria-label="Yanıtı Gönder">Yanıtı Gönder</button>
   </div>
+
+
+<!-- Firebase (compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script>
+
+<script>
+  // 1) Firebase config — Jüri ile birebir aynı proje olmalı
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+    projectId: "YOUR_PROJECT",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+  if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+  const db = firebase.database();
+
+  // 2) Oda ve takım bilgisi: URL parametresinden
+  // Örn: player.html?room=A101&team=A%20Takımı
+  const qs = new URLSearchParams(location.search);
+  const ROOM = qs.get('room') || 'A101';
+  const TEAM = qs.get('team') || 'A Takımı';
+
+  // 3) Player sayfasındaki mevcut elemanları yakala
+  // (Senin player UI'ındaki id’lere göre güncelle)
+  const imgEl      = document.getElementById('question-image')   || document.querySelector('#questionImg, #qImage, img');
+  const timerEl    = document.getElementById('countdown')        || document.querySelector('#timer, .timer');
+  const statusEl   = document.getElementById('statusText')       || document.querySelector('#status, .status');
+  const btnA       = document.getElementById('btnA')             || document.querySelector('[data-choice="A"]');
+  const btnB       = document.getElementById('btnB')             || document.querySelector('[data-choice="B"]');
+  const btnC       = document.getElementById('btnC')             || document.querySelector('[data-choice="C"]');
+  const btnD       = document.getElementById('btnD')             || document.querySelector('[data-choice="D"]');
+  const sendBtn    = document.getElementById('sendAnswer')       || document.querySelector('#send, [data-send]');
+
+  // 4) Yerel state
+  let selectedChoice = null;
+  let running = false;
+  let endAt = 0; // milisaniye cinsinden
+
+  function setChoice(ch){
+    selectedChoice = ch;
+    // UI highlight (tasarıma dokunmadan sınıf veriyoruz; CSS sende)
+    [btnA, btnB, btnC, btnD].forEach(b=>{
+      if(!b) return;
+      b.classList.toggle('active', b && b.dataset && b.dataset.choice === ch);
+    });
+  }
+  if(btnA) btnA.addEventListener('click', ()=> setChoice('A'));
+  if(btnB) btnB.addEventListener('click', ()=> setChoice('B'));
+  if(btnC) btnC.addEventListener('click', ()=> setChoice('C'));
+  if(btnD) btnD.addEventListener('click', ()=> setChoice('D'));
+
+  // 5) Cevabı gönder
+  if(sendBtn){
+    sendBtn.addEventListener('click', ()=>{
+      if(!selectedChoice){ alert('Lütfen A/B/C/D seçeneklerinden birini seçin.'); return; }
+      if(!running){ alert('Süre başlamamış veya bitmiş görünüyor.'); return; }
+      // push ile benzersiz kayıt
+      db.ref(`rooms/${ROOM}/answers`).push({
+        team: TEAM,
+        choice: selectedChoice,
+        ts: Date.now()
+      }).then(()=>{
+        // İstersen gönderimden sonra kilitle:
+        // disableChoices();
+        // sendBtn.disabled = true;
+      }).catch(err=> console.error('Answer error:', err));
+    });
+  }
+
+  function disableChoices(){
+    [btnA, btnB, btnC, btnD, sendBtn].forEach(b=> b && (b.disabled = true));
+  }
+  function enableChoices(){
+    [btnA, btnB, btnC, btnD, sendBtn].forEach(b=> b && (b.disabled = false));
+  }
+
+  // 6) Jüri soru yayınladığında dinle (img + süre)
+  db.ref(`rooms/${ROOM}/question`).on('value', snap=>{
+    const q = snap.val();
+    if(!q){
+      // Soru yok → bekleme ekranı
+      running = false;
+      endAt = 0;
+      if(timerEl) timerEl.textContent = '—';
+      if(statusEl) statusEl.textContent = 'Soru bekleniyor…';
+      enableChoices(); // yeni soruya hazır
+      return;
+    }
+    // Soru var
+    const img = q.img || '';
+    const duration = parseInt(q.duration || 30, 10) || 30;
+
+    // Görseli göster (DataURL veya URL olur)
+    if(imgEl && img){ imgEl.src = img; imgEl.removeAttribute('hidden'); }
+
+    // Geri sayımı başlat
+    running = true;
+    endAt = Date.now() + duration*1000;
+    if(statusEl) statusEl.textContent = 'Süre başladı';
+
+    // Her saniye güncelle
+    tick();
+  });
+
+  // 7) Süre bitir olayını dinle (jüri “Süreyi Bitir”e basınca)
+  db.ref(`rooms/${ROOM}/timeEnd`).on('value', snap=>{
+    const v = snap.val();
+    if(v && v.at){
+      running = false;
+      endAt = 0;
+      if(timerEl) timerEl.textContent = '00';
+      if(statusEl) statusEl.textContent = 'Süre bitti';
+      disableChoices();
+    }
+  });
+
+  // 8) Sayaç
+  let ticking = false;
+  function tick(){
+    if(ticking) return;
+    ticking = true;
+    const iv = setInterval(()=>{
+      if(!running){ clearInterval(iv); ticking = false; return; }
+      const left = Math.max(0, Math.ceil((endAt - Date.now())/1000));
+      if(timerEl) timerEl.textContent = String(left).padStart(2,'0');
+      if(left <= 0){
+        running = false;
+        if(statusEl) statusEl.textContent = 'Süre bitti';
+        disableChoices();
+        clearInterval(iv); ticking = false;
+      }
+    }, 250); // daha akıcı
+  }
+</script>
+
+
+
 </body>
 </html>
+
