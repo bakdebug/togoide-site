@@ -334,6 +334,25 @@
       }
     }
   </style>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script>
+  <script>
+    // TODO: Buraya kendi Firebase config'inizi yapıştırın
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    if (!window.firebase) { console.error('Firebase yüklenemedi'); }
+    else {
+      firebase.initializeApp(firebaseConfig);
+      window.db = firebase.database();
+    }
+  </script>
 </head>
 <body>
   <header>
@@ -414,91 +433,87 @@ const previewImg =
 <script>window.__KO_LAST_DATAURL__ = window.__KO_LAST_DATAURL__ || null;</script>
 
 <script>
-// ---- Jüri ↔ Yarışmacı Cihaz‑içi Bağlantı (BroadcastChannel) ----
-const channel = new BroadcastChannel('yarismakanali');
+// ---- Jüri ↔ Yarışmacılar (Firebase Realtime Database) ----
+(function(){
+  if(!window.db){ console.warn('Firebase db yok; lütfen config ekleyin.'); }
+  const sendBtn = document.getElementById('send-start');
+  const stopBtn = document.getElementById('stop-timer');
+  const secondsInput = document.querySelector('#seconds, #duration, input[name="seconds"], input[name="duration"]');
+  const previewImg = document.getElementById('question-preview') || document.querySelector('#qPreview, #preview, #pngPreview, img#preview, .preview img, #selectedImage, #imgPreview');
 
-// Elemanları esnek seçicilerle yakala (mevcut id'lere göre çalışır)
-const sendBtn = document.getElementById('send-start');
-const stopBtn = document.getElementById('stop-timer');
-const secondsInput = document.querySelector('#seconds, #duration, input[name="seconds"], input[name="duration"]');
+  // Oda: ?room= parametresi varsa onu kullan, yoksa A101
+  const urlParams = new URLSearchParams(location.search);
+  const ROOM = urlParams.get('room') || 'A101';
 
-const answersTable = (function(){
-  let t = document.querySelector('#answers-table');
-  if(!t){
-    const right = document.querySelector('.right-panel') || document.body;
-    t = document.createElement('table');
-    t.id = 'answers-table';
-    t.style.width = '100%';
-    t.style.borderCollapse = 'collapse';
-    t.innerHTML = `
-      <thead>
-        <tr>
-          <th style=\"text-align:left; padding:8px; border-bottom:1px solid rgba(0,0,0,0.08)\">Takım</th>
-          <th style=\"text-align:left; padding:8px; border-bottom:1px solid rgba(0,0,0,0.08)\">Cevap</th>
-          <th style=\"text-align:left; padding:8px; border-bottom:1px solid rgba(0,0,0,0.08)\">Saat</th>
-        </tr>
-      </thead>
-      <tbody></tbody>`;
-    right.appendChild(t);
+  function fmtTime(d){ const pad=n=>String(n).padStart(2,'0'); return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
+  const answersTable = (function(){
+    let t = document.querySelector('#answers-table');
+    if(!t){
+      const right = document.querySelector('.right-panel') || document.body;
+      t = document.createElement('table');
+      t.id = 'answers-table';
+      t.style.width = '100%';
+      t.style.borderCollapse = 'collapse';
+      t.innerHTML = `
+        <thead>
+          <tr>
+            <th style="text-align:left; padding:8px; border-bottom:1px solid rgba(0,0,0,0.08)">Takım</th>
+            <th style="text-align:left; padding:8px; border-bottom:1px solid rgba(0,0,0,0.08)">Cevap</th>
+            <th style="text-align:left; padding:8px; border-bottom:1px solid rgba(0,0,0,0.08)">Saat</th>
+          </tr>
+        </thead>
+        <tbody></tbody>`;
+      right.appendChild(t);
+    }
+    return t;
+  })();
+
+  function clearAnswers(){ const tb=answersTable.querySelector('tbody'); if(tb) tb.innerHTML=''; }
+  function appendAnswer(team, choice){
+    const tb = answersTable.querySelector('tbody'); if(!tb) return;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="padding:8px; border-bottom:1px dashed rgba(0,0,0,0.06)">${team}</td>
+      <td style="padding:8px; border-bottom:1px dashed rgba(0,0,0,0.06); font-weight:700">${choice}</td>
+      <td style="padding:8px; border-bottom:1px dashed rgba(0,0,0,0.06); color:#667">${fmtTime(new Date())}</td>`;
+    tb.appendChild(tr);
+    const notes = document.querySelector('#notebook, #notes, textarea[data-notebook], textarea#notepad');
+    if(notes){ notes.value += `\n${fmtTime(new Date())}  –  ${team} → ${choice}`; try{ localStorage.setItem('jury_notes_auto', notes.value); }catch(e){} }
   }
-  return t;
+
+  // Firebase listeners (answers)
+  if(window.db){
+    db.ref(`rooms/${ROOM}/answers`).off();
+    db.ref(`rooms/${ROOM}/answers`).on('child_added', snap=>{
+      const val = snap.val()||{}; if(val.team && val.choice) appendAnswer(val.team, val.choice);
+    });
+  }
+
+  // Gönder ve süre başlat
+  if(sendBtn){
+    sendBtn.addEventListener('click', ()=>{
+      const src = (window.__KO_LAST_DATAURL__ && typeof window.__KO_LAST_DATAURL__==='string') ? window.__KO_LAST_DATAURL__ : (previewImg && previewImg.src ? previewImg.src : '');
+      const duration = parseInt((secondsInput && secondsInput.value) || '30', 10) || 30;
+      if(!src){ alert('Önce bir PNG soru görseli seçin.'); return; }
+      clearAnswers();
+      if(window.db){
+        db.ref(`rooms/${ROOM}/question`).set({ img: src, duration, ts: Date.now() });
+        db.ref(`rooms/${ROOM}/answers`).remove();
+        db.ref(`rooms/${ROOM}/timeEnd`).remove();
+      } else {
+        console.warn('db yok; lütfen Firebase config ekleyin.');
+      }
+    });
+  }
+
+  // Süreyi bitir
+  if(stopBtn){
+    stopBtn.addEventListener('click', ()=>{
+      if(window.db){ db.ref(`rooms/${ROOM}/timeEnd`).set({ at: Date.now() }); }
+    });
+  }
 })();
-
-function fmtTime(d){
-  const pad = n=> String(n).padStart(2,'0');
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-}
-
-function clearAnswers(){
-  const tb = answersTable.querySelector('tbody');
-  if(tb) tb.innerHTML = '';
-}
-
-function appendAnswer(team, choice){
-  const tb = answersTable.querySelector('tbody');
-  if(!tb) return;
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td style=\"padding:8px; border-bottom:1px dashed rgba(0,0,0,0.06)\">${team}</td>
-    <td style=\"padding:8px; border-bottom:1px dashed rgba(0,0,0,0.06); font-weight:700\">${choice}</td>
-    <td style=\"padding:8px; border-bottom:1px dashed rgba(0,0,0,0.06); color:#667\"\">${fmtTime(new Date())}</td>`;
-  tb.appendChild(tr);
-  // Not defterine de otomatik düş (varsa)
-  const notes = document.querySelector('#notebook, #notes, textarea[data-notebook], textarea#notepad');
-  if(notes){
-    notes.value += `\n${fmtTime(new Date())}  –  ${team} → ${choice}`;
-    try{ localStorage.setItem('jury_notes_auto', notes.value); }catch(e){}
-  }
-}
-
-// Cevapları dinle
-channel.addEventListener('message', (e)=>{
-  const msg = e.data || {};
-  if(msg.type === 'answer'){
-    const { team, choice } = msg.payload || {};
-    if(team && choice) appendAnswer(team, choice);
-  }
-});
-
-// Soru gönder + süre başlat
-if(sendBtn){
-  sendBtn.addEventListener('click', ()=>{
-   const src = (window.__KO_LAST_DATAURL__ && typeof window.__KO_LAST_DATAURL__ === 'string')
-  ? window.__KO_LAST_DATAURL__
-  : (previewImg && previewImg.src ? previewImg.src : '');
-    const duration = parseInt((secondsInput && secondsInput.value) || '30', 10) || 30;
-    if(!src){ alert('Önce bir PNG soru görseli seçin.'); return; }
-    clearAnswers();
-    channel.postMessage({ type: 'newQuestion', payload: { img: src, duration } });
-  });
-}
-
-// Süre bitir → yarışmacı butonlarını kilitle
-if(stopBtn){
-  stopBtn.addEventListener('click', ()=>{
-    channel.postMessage({ type: 'timeEnd', payload: {} });
-  });
-}
 </script>
 </body>
 </html>
+
