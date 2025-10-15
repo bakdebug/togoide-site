@@ -621,4 +621,20 @@
     });
   })();
 </script>
+
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Hero içindeki "Detaylı Bilgi Alın" butonu
+    const detailsBtn = document.querySelector('.cta-row .btn.btn-primary[href="#details"]');
+    if (detailsBtn) {
+      // GitHub Pages’de klasör yapına göre yolu gerekirse düzelt:
+      // const JURY_URL = '/bilgi-yarismasi/jury.html';
+      const JURY_URL = 'jury.html';
+      detailsBtn.setAttribute('href', JURY_URL);
+    }
+  });
+</script>  
+  
+  
 </html>
