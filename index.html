@@ -71,6 +71,42 @@
     .icon-btn:hover{transform:translateY(-1px); box-shadow:0 6px 14px rgba(0,0,0,.08)}
     .icon-btn svg{width:20px; height:20px; stroke:var(--brand-navy); stroke-width:2; fill:none}
 
+    /* ACCOUNT DROPDOWN */
+    .dropdown{ position:relative; }
+    .dropdown-toggle{ position:relative; }
+    .dropdown.open .dropdown-toggle{
+      background: var(--brand-navy);
+      border-color: var(--brand-navy);
+    }
+    .dropdown.open .dropdown-toggle svg{
+      stroke:#fff;
+    }
+    .dropdown-menu{
+      position:absolute; right:0; top:calc(100% + 10px);
+      min-width: 220px; background:#fff; border:1px solid #e2e8f0; border-radius:14px;
+      box-shadow:0 18px 40px rgba(0,0,0,.14);
+      padding:10px;
+      opacity:0; transform: translateY(-6px) scale(.98);
+      transition: opacity .18s ease, transform .22s cubic-bezier(.2,.8,.2,1);
+      pointer-events:none; z-index:60;
+    }
+    .dropdown.open .dropdown-menu{
+      opacity:1; transform: translateY(0) scale(1);
+      pointer-events:auto;
+    }
+    .dropdown-menu h6{
+      margin:6px 10px 8px; font-size:12px; letter-spacing:.04em; text-transform:uppercase;
+      color:#64748b; font-weight:800;
+    }
+    .menu-item{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px; border-radius:10px; text-decoration:none;
+      color:#0f172a; font-weight:600; font-size:14px;
+    }
+    .menu-item:hover{ background:#fef2eb; color:#0b1222; }
+    .menu-sep{ height:1px; background:#eef2f7; margin:8px 0; border-radius:1px }
+    .menu-item .mi{ width:18px; height:18px; stroke:var(--brand-navy); stroke-width:2; fill:none }
+
     /* HERO 200:85 */
     .hero{
       position:relative; 
@@ -283,13 +319,52 @@
           <path d="M20.8 8.6a5 5 0 0 0-8.3-2.9L12 6.2l-.5-.5a5 5 0 0 0-7.1 7.1l.5.5L12 21l7.1-7.1.5-.5a5 5 0 0 0 1.2-4.8z"/>
         </svg>
       </button>
-      <!-- Hesabım -->
-      <button class="icon-btn" title="Hesabım">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5z"/>
-          <path d="M4 20a8 8 0 0 1 16 0"/>
-        </svg>
-      </button>
+      <!-- Hesabım (Dropdown) -->
+      <div class="dropdown" id="accountDropdown">
+        <button class="icon-btn dropdown-toggle" id="accountBtn" title="Hesabım" aria-expanded="false" aria-haspopup="menu" aria-controls="accountMenu">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5z"/>
+            <path d="M4 20a8 8 0 0 1 16 0"/>
+          </svg>
+        </button>
+        <div class="dropdown-menu" id="accountMenu" role="menu">
+          <h6>Hesabım</h6>
+          <a class="menu-item" href="/login" role="menuitem">
+            <svg class="mi" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+            Giriş Yap / Kayıt Ol
+          </a>
+          <div class="menu-sep"></div>
+          <a class="menu-item" href="/profile" role="menuitem">
+            <svg class="mi" viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5z"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
+            Profilim
+          </a>
+          <a class="menu-item" href="/requests" role="menuitem">
+            <svg class="mi" viewBox="0 0 24 24"><path d="M3 4h18M3 10h18M3 16h12"/></svg>
+            Taleplerim
+          </a>
+          <a class="menu-item" href="/offers" role="menuitem">
+            <svg class="mi" viewBox="0 0 24 24"><path d="M20 7l-8 8-4-4"/><path d="M4 12V4h8"/></svg>
+            Tekliflerim
+          </a>
+          <a class="menu-item" href="/messages" role="menuitem">
+            <svg class="mi" viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>
+            Mesajlar
+          </a>
+          <a class="menu-item" href="/payments" role="menuitem">
+            <svg class="mi" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+            Ödemeler
+          </a>
+          <a class="menu-item" href="/settings" role="menuitem">
+            <svg class="mi" viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V22a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06A2 2 0 1 1 4.21 17l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 6.8 2.62l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V1a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06A2 2 0 1 1 21.38 6.8l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .66.38 1.26 1 1.51.33.15.67.35 1 .59"/></svg>
+            Ayarlar
+          </a>
+          <div class="menu-sep"></div>
+          <a class="menu-item" href="/logout" role="menuitem">
+            <svg class="mi" viewBox="0 0 24 24"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg>
+            Çıkış Yap
+          </a>
+        </div>
+      </div>
     </nav>
   </header>
 
@@ -521,26 +596,29 @@
     later && later.addEventListener('click', hideBanner);
   })();
 </script>
+<script>
+  (function(){
+    const dd = document.getElementById('accountDropdown');
+    if(!dd) return;
+    const btn = document.getElementById('accountBtn');
+    const menu = document.getElementById('accountMenu');
 
-  <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // player.html NEREDE?
-    // 1) Aynı klasördeyse:
-    // const PLAYER_URL = 'player.html';
-
-    // 2) /quiz/ klasöründeyse:
-    // const PLAYER_URL = '/quiz/player.html';
-
-    // 3) Tam URL vermek istersen:
-    // const PLAYER_URL = 'https://senindomainin.com/quiz/player.html';
-
-    const PLAYER_URL = 'player.html'; // ← burayı konumuna göre düzelt
-
-    const guideBtn = document.querySelector('a.btn.btn-outline[href="/request"]');
-    if (guideBtn) {
-      guideBtn.setAttribute('href', PLAYER_URL);
-      guideBtn.removeAttribute('target'); // yeni sekmede açmasın (isteğe bağlı)
+    function closeAll(){
+      dd.classList.remove('open');
+      btn.setAttribute('aria-expanded','false');
     }
-  });
+    function toggle(){
+      const isOpen = dd.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(isOpen));
+    }
+
+    btn.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
+    document.addEventListener('click', (e)=>{
+      if(!dd.contains(e.target)) closeAll();
+    });
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') closeAll();
+    });
+  })();
 </script>
 </html>
