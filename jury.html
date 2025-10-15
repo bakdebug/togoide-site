@@ -521,6 +521,101 @@ const previewImg =
 </script>
 
 
+
+  <script>
+(function(){
+  if(!window.db){ console.error('Firebase DB yok (init eksik).'); return; }
+
+  // URL parametreleri
+  const qs   = new URLSearchParams(location.search);
+  const ROOM = qs.get('room') || 'A101';
+  const TEAM = qs.get('team') || 'A Takımı';
+
+  // Elemanlar (kendi id’lerini kullan)
+  const imgEl    = document.getElementById('question-image') || document.querySelector('#questionImg, #qImage, img#question');
+  const timerEl  = document.getElementById('countdown')      || document.querySelector('#timer, .timer');
+  const statusEl = document.getElementById('statusText')     || document.querySelector('#status, .status');
+
+  // Alt bar butonları (A, B, C, D, Gönder)
+  const btnA    = document.querySelector('[data-choice="A"]') || document.getElementById('btnA');
+  const btnB    = document.querySelector('[data-choice="B"]') || document.getElementById('btnB');
+  const btnC    = document.querySelector('[data-choice="C"]') || document.getElementById('btnC');
+  const btnD    = document.querySelector('[data-choice="D"]') || document.getElementById('btnD');
+  const sendBtn = document.querySelector('[data-send]')       || document.getElementById('sendAnswer');
+
+  let selected = null;
+  let running  = false;
+  let endAt    = 0;
+  let ticking  = false;
+
+  function pick(ch){
+    selected = ch;
+    [btnA,btnB,btnC,btnD].forEach(b=> b && b.classList.toggle('active', b?.dataset?.choice===ch));
+  }
+  btnA && btnA.addEventListener('click', ()=> pick('A'));
+  btnB && btnB.addEventListener('click', ()=> pick('B'));
+  btnC && btnC.addEventListener('click', ()=> pick('C'));
+  btnD && btnD.addEventListener('click', ()=> pick('D'));
+
+  sendBtn && sendBtn.addEventListener('click', ()=>{
+    if(!selected){ alert('Bir seçenek seçin.'); return; }
+    if(!running){ alert('Süre başlamadı veya bitti.'); return; }
+    db.ref(`rooms/${ROOM}/answers`).push({ team: TEAM, choice: selected, ts: Date.now() })
+      .then(()=>{ /* istersen butonları kilitle */ })
+      .catch(err=> console.error('Answer push error:', err));
+  });
+
+  function setWaiting(){
+    running=false; endAt=0;
+    if(timerEl)  timerEl.textContent = '—';
+    if(statusEl) statusEl.textContent = 'Soru bekleniyor…';
+  }
+  function disableAll(){ [btnA,btnB,btnC,btnD,sendBtn].forEach(b=> b && (b.disabled=true)); }
+  function enableAll(){ [btnA,btnB,btnC,btnD,sendBtn].forEach(b=> b && (b.disabled=false)); }
+
+  function startTick(){
+    if(ticking) return;
+    ticking = true;
+    const iv = setInterval(()=>{
+      if(!running){ clearInterval(iv); ticking=false; return; }
+      const left = Math.max(0, Math.ceil((endAt - Date.now())/1000));
+      if(timerEl) timerEl.textContent = String(left).padStart(2,'0');
+      if(left<=0){
+        running=false; if(statusEl) statusEl.textContent='Süre bitti'; disableAll();
+        clearInterval(iv); ticking=false;
+      }
+    }, 250);
+  }
+
+  // Jüri yeni soru yayınladı mı?
+  db.ref(`rooms/${ROOM}/question`).on('value', snap=>{
+    const q = snap.val();
+    if(!q){ setWaiting(); enableAll(); return; }
+    const img = q.img || '';
+    const duration = parseInt(q.duration||30,10) || 30;
+
+    if(imgEl && img){ imgEl.src = img; imgEl.removeAttribute('hidden'); }
+    running = true;
+    endAt = Date.now() + duration*1000;
+    if(statusEl) statusEl.textContent = 'Süre başladı';
+    enableAll();
+    startTick();
+  });
+
+  // Jüri “Süreyi Bitir” dedi mi?
+  db.ref(`rooms/${ROOM}/timeEnd`).on('value', snap=>{
+    const v = snap.val();
+    if(v && v.at){ running=false; endAt=0; if(timerEl) timerEl.textContent='00'; if(statusEl) statusEl.textContent='Süre bitti'; disableAll(); }
+  });
+
+  // Basit heartbeat (debug)
+  db.ref(`rooms/${ROOM}/__heartbeat`).set({ from:'player', at: Date.now(), team: TEAM }).catch(()=>{});
+})();
+</script>
+
+
+
+  
 </body>
 </html>
 
