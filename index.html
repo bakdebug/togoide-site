@@ -521,4 +521,16 @@
     later && later.addEventListener('click', hideBanner);
   })();
 </script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function(){
+    const guideBtn = document.querySelector('a.btn.btn-outline[href="/request"]');
+    if (guideBtn) {
+      guideBtn.addEventListener('click', function(e){
+        e.preventDefault(); // mevcut /request yönlendirmesini engeller
+        window.location.href = 'player.html'; // player.html sayfasına yönlendirir
+      });
+    }
+  });
+</script>  
 </html>
