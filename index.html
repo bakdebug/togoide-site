@@ -635,6 +635,30 @@
     }
   });
 </script>  
+
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // player.html NEREDE?
+    // 1) Aynı klasördeyse:
+    // const PLAYER_URL = 'player.html';
+
+    // 2) /quiz/ klasöründeyse:
+    // const PLAYER_URL = '/quiz/player.html';
+
+    // 3) Tam URL vermek istersen:
+    // const PLAYER_URL = 'https://senindomainin.com/quiz/player.html';
+
+    const PLAYER_URL = 'player.html'; // ← burayı konumuna göre düzelt
+
+    const guideBtn = document.querySelector('a.btn.btn-outline[href="/request"]');
+    if (guideBtn) {
+      guideBtn.setAttribute('href', PLAYER_URL);
+      guideBtn.removeAttribute('target'); // yeni sekmede açmasın (isteğe bağlı)
+    }
+  });
+</script>
+
   
   
 </html>
