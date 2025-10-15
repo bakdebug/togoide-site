@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Yarışmacı Ekranı</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Text&display=swap');
+  body {
+    margin: 0;
+    background-color: #001f4d;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #001f4d;
+    padding-bottom: 40px;
+  }
+  #container {
+    background: white;
+    border-radius: 20px;
+    width: 95vw;
+    max-width: 1400px;
+    padding: 28px 32px 36px 32px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 0;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    overflow: hidden;
+    min-height: 90vh;
+  }
+  #timer {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 700;
+    font-size: 2rem;
+    color: #e53935; /* kırmızı */
+    height: 34px;
+    user-select: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 100;
+  }
+  #question-image {
+    width: 100%;
+    height: auto;
+    max-height: 88vh; /* neredeyse tam ekran */
+    object-fit: contain;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    opacity: 0; /* başlangıçta görünmesin */
+    transition: opacity 0.4s ease;
+    user-select: none;
+    margin-top: 10px;
+    position: relative;
+    z-index: 60; /* diğerlerinin üstüne */
+  }
+  #question-image.visible { opacity: 1; }
+  #opening-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #001f4d;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+    background: url('assets/smlogo.png') center center no-repeat;
+    background-size: 40%; /* logoyu küçült */
+    display: flex;
+    flex-direction: column; /* metni üste al */
+    align-items: center;
+    justify-content: flex-start; /* metni üste hizala */
+    padding-top: 40px; /* yazıyı biraz aşağıdan başlat */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
+  }
+  #opening-text.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  /* Fixed footer bar */
+  #footer-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    padding: 12px 16px;
+    z-index: 100000;
+    pointer-events: auto;
+  }
+  .choice-btn {
+    background-color: #28a745; /* yeşil */
+    color: #fff;
+    border: 1.5px solid rgba(0,0,0,0.08);
+    border-radius: 9999px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(40,167,69,0.25);
+    transition: background-color 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .choice-btn:hover { background-color: #34c759; box-shadow: 0 4px 14px rgba(52,199,89,0.4); }
+  .choice-btn.selected { background-color: #007aff; box-shadow: 0 4px 14px rgba(0,122,255,0.45); }
+  .choice-btn.send {
+    background-color: #ff3b30; /* kırmızı */
+    min-width: 160px; /* daha geniş */
+    box-shadow: 0 4px 10px rgba(255,59,48,0.25);
+  }
+  .choice-btn.send:hover {
+    background-color: #ff453a;
+    box-shadow: 0 4px 14px rgba(255,59,48,0.4);
+    position: relative;
+  }
+  .choice-btn.send:hover::after {
+    content: "Yanıt gönderildikten sonra değiştirilemez!";
+    position: absolute;
+    top: -42px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(246, 150, 145, 0.95);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    pointer-events: none;
+    opacity: 0;
+    animation: fadeInTooltip 0.25s forwards;
+  }
+
+  @keyframes fadeInTooltip {
+    from { opacity: 0; transform: translate(-50%, -4px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+  .choice-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+  /* Footer çubuğuna yer açmak için alt boşluk */
+  body { padding-bottom: 84px; }
+</style>
+</head>
+<body>
+  <div id="container" role="main" aria-live="polite">
+    <div id="timer" aria-label="Kalan süre" aria-live="assertive"></div>
+    <div id="opening-text">🕓 Soru bekleniyor...</div>
+    <img id="question-image" alt="Soru" />
+  </div>
+
+<script>
+  const timerEl = document.getElementById('timer');
+  const openingText = document.getElementById('opening-text');
+  const questionImage = document.getElementById('question-image');
+
+  // Offline cihaz-içi haberleşme kanalı (jury.html ile aynı kanalı kullanır)
+  const channel = new BroadcastChannel('yarismakanali');
+
+  // Takım adı URL hash'inden (#A, #B...) okunur; yoksa 'Takım'
+  const teamName = (location.hash || '').replace('#','').trim() || 'Takım';
+
+  let countdown;
+  let timeLeft = 10;
+
+  function resetView() {
+    timerEl.classList.remove('visible');
+    timerEl.textContent = '';
+    openingText.classList.remove('hidden');
+    questionImage.classList.remove('visible');
+    questionImage.src = '';
+  }
+
+  function startCountdown(duration) {
+    timeLeft = duration;
+    timerEl.textContent = timeLeft + ' s';
+    timerEl.classList.add('visible');
+    openingText.classList.add('hidden');
+    questionImage.classList.add('visible');
+
+    countdown = setInterval(() => {
+      timeLeft--;
+      if(timeLeft <= 0) {
+        clearInterval(countdown);
+        timerEl.textContent = '0 s';
+      } else {
+        timerEl.textContent = timeLeft + ' s';
+      }
+    }, 1000);
+  }
+
+  // Gerçek akış: jüri yeni soru yayınladığında PNG ve süre bilgisi gelir
+  channel.addEventListener('message', (e)=>{
+    const msg = e.data || {};
+    if(msg.type === 'newQuestion'){
+      const { img, duration } = msg.payload || {};
+      if(img){ questionImage.src = img; }
+      startCountdown(typeof duration === 'number' ? duration : 30);
+    }
+    if(msg.type === 'timeEnd'){
+      timerEl.textContent = '0 s';
+    }
+  });
+
+  // Footer butonlarını geç yükleme (footer body sonunda)
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const btnA = document.getElementById('btnA');
+    const btnB = document.getElementById('btnB');
+    const btnC = document.getElementById('btnC');
+    const btnD = document.getElementById('btnD');
+    const sendBtn = document.getElementById('sendAnswer');
+
+    let selectedChoice = null;
+
+    function setSelected(btn, choice){
+      if(sendBtn.disabled) return; // süre bitmişse seçim yapma
+      [btnA, btnB, btnC, btnD].forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedChoice = choice;
+    }
+
+    btnA.addEventListener('click', ()=> setSelected(btnA,'A'));
+    btnB.addEventListener('click', ()=> setSelected(btnB,'B'));
+    btnC.addEventListener('click', ()=> setSelected(btnC,'C'));
+    btnD.addEventListener('click', ()=> setSelected(btnD,'D'));
+
+    sendBtn.addEventListener('click', ()=>{
+      if(!selectedChoice) return;
+      channel.postMessage({ type: 'answer', payload: { team: teamName, choice: selectedChoice } });
+      // Gönderince hepsini kilitle
+      [btnA, btnB, btnC, btnD, sendBtn].forEach(b=> b.disabled = true);
+    });
+
+    // Sayaç bitince footer butonlarını kilitle
+    function lockFooter(){ [btnA, btnB, btnC, btnD, sendBtn].forEach(b=> b.disabled = true); }
+
+    // CountDown bittiğinde de kilitle
+    const _origStartCountdown = startCountdown;
+    startCountdown = function(duration){
+      _origStartCountdown(duration);
+      // süre bitişini yakalamak için interval kontrolü
+      const watch = setInterval(()=>{
+        if(timerEl.textContent.trim() === '0 s'){
+          clearInterval(watch);
+          lockFooter();
+        }
+      }, 250);
+    };
+
+    // Jüri tarafı timeEnd gönderirse de kilitlenmeli
+    channel.addEventListener('message', (e)=>{
+      if(e.data?.type === 'timeEnd') lockFooter();
+      if(e.data?.type === 'newQuestion'){
+        // Yeni soruda yeniden aç
+        [btnA, btnB, btnC, btnD].forEach(b=>{ b.disabled=false; b.classList.remove('selected'); });
+        sendBtn.disabled = false;
+        selectedChoice = null;
+      }
+    });
+  });
+
+  // Initialize view
+  resetView();
+</script>
+  <div id="footer-bar">
+    <button class="choice-btn" id="btnA" aria-label="Seçenek A">A</button>
+    <button class="choice-btn" id="btnB" aria-label="Seçenek B">B</button>
+    <button class="choice-btn" id="btnC" aria-label="Seçenek C">C</button>
+    <button class="choice-btn" id="btnD" aria-label="Seçenek D">D</button>
+    <button class="choice-btn send" id="sendAnswer" aria-label="Yanıtı Gönder">Yanıtı Gönder</button>
+  </div>
+</body>
+</html>

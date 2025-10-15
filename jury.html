@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jüri Paneli</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent-color: #1a2a6c;
+      --accent-gradient: linear-gradient(135deg, #223a75, #1a2a6c);
+      --background: #f5f7fa;
+      --panel-bg: #ffffff;
+      --text-color: #1c1c1e;
+      --subtext-color: #6e6e73;
+      --border-radius: 14px;
+      --transition-speed: 0.4s;
+      --shadow: rgba(30, 30, 40, 0.08);
+      --button-shadow: rgba(26, 42, 108, 0.15);
+      --hover-glow: rgba(26, 42, 108, 0.1);
+      --soft-navy: #2c3e70;
+      --soft-white: #ffffff; 
+      --red: #e63946;
+      --red-dark: #c62828;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--background);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 1rem 3rem;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      user-select: none;
+    }
+    header h1 {
+      font-weight: 600;
+      font-size: 2.8rem;
+      color: var(--soft-navy);
+      margin: 0;
+      letter-spacing: 0.04em;
+      -webkit-font-smoothing: antialiased;
+    }
+    header p {
+      color: var(--subtext-color);
+      font-size: 2.15rem;
+      margin-top: 0.4rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2.5rem;
+      height: calc(100vh - 10rem);
+    }
+    /* Left panel: upload and controls stacked vertically */
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      background: var(--panel-bg);
+      border-radius: var(--border-radius);
+      box-shadow: 0 8px 24px var(--shadow);
+      padding: 1.5rem 2rem;
+      /* overflow: hidden; */
+      overflow: visible;
+    }
+    .upload-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 1.5rem;
+      user-select: none;
+      width: 100%;
+      max-width: none;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    label.upload-label {
+      display: inline-block;
+      padding: 0.85rem 2rem;
+      background: linear-gradient(135deg, #44c496, #36a97f);
+      color: var(--soft-white);
+      font-weight: 600;
+      border-radius: 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+      font-size: 1.1rem;
+      letter-spacing: 0.015em;
+      box-shadow: 0 0 10px transparent;
+      width: 100%;
+      text-align: center;
+      max-width: 320px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    label.upload-label:hover,
+    label.upload-label:focus-visible {
+      background: linear-gradient(135deg, #3aa27c, #2f8f6d);
+      box-shadow: 0 0 12px rgba(62,180,137,0.35);
+      outline-offset: 2px;
+      outline-color: transparent;
+      outline-style: none;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    .preview {
+      border-radius: var(--border-radius);
+      background: linear-gradient(145deg, #e9ebf1, #d9dcef);
+      box-shadow: inset 4px 4px 14px #c5c9df, inset -4px -4px 14px #f4f6ff;
+      max-width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+      border: 1.5px solid #d1d5e0;
+      transition: box-shadow var(--transition-speed) ease;
+      user-select: none;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+    .preview:hover {
+      box-shadow: inset 4px 4px 18px #b8bbe0, inset -4px -4px 18px #f9fbff;
+    }
+    .controls {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      width: 100%;
+      max-width: 800px;
+      user-select: none;
+    }
+    button {
+      background-color: var(--accent-color);
+      border: 1.5px solid rgba(26,42,108,0.2);
+      color: var(--soft-white);
+      padding: 0.7rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      user-select: none;
+      min-width: 180px;
+      letter-spacing: 0.02em;
+      text-align: center;
+      line-height: 1.3;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      box-sizing: border-box;
+      box-shadow: none;
+    }
+    button:hover,
+    button:focus-visible {
+      background-color: #2c3a9d;
+      border-color: rgba(26,42,108,0.4);
+      outline-offset: 2px;
+      outline-color: transparent;
+      outline-style: none;
+    }
+    button#send-start {
+      background-color: var(--accent-color);
+      font-size: 1rem;
+      padding: 0.6rem 1.5rem;
+      width: 300px;
+      margin: 0 0.5rem;
+      display: block;
+      border-radius: 28px;
+      transition: background-color 0.35s ease, border-color 0.35s ease;
+      border: 1.5px solid rgba(26,42,108,0.2);
+      box-shadow: none;
+    }
+    button#send-start:hover,
+    button#send-start:focus-visible {
+      background-color: #2c3a9d;
+      border-color: rgba(26,42,108,0.4);
+    }
+    button#stop-timer {
+      background-color: var(--red);
+      border: 1.5px solid rgba(230,57,70,0.2);
+      color: var(--soft-white);
+      font-size: 1rem;
+      padding: 0.6rem 1.5rem;
+      border-radius: 28px;
+      transition: background-color 0.35s ease, border-color 0.35s ease;
+      box-shadow: none;
+    }
+    button#stop-timer:hover,
+    button#stop-timer:focus-visible {
+      background-color: #db4a59;
+      border-color: rgba(198,40,40,0.4);
+    }
+    /* Right panel: answers list */
+    .right-panel {
+      background: var(--panel-bg);
+      border-radius: var(--border-radius);
+      box-shadow: 0 8px 24px var(--shadow);
+      padding: 1.75rem 2rem;
+      overflow-y: auto;
+      max-height: calc(100vh - 10rem);
+      display: flex;
+      flex-direction: column;
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 14px;
+      font-size: 1.1rem;
+      font-weight: 400;
+      letter-spacing: 0.015em;
+      user-select: none;
+      min-width: 320px;
+      border-radius: var(--border-radius);
+    }
+    thead tr {
+      background: var(--accent-gradient);
+      color: var(--soft-white);
+      border-radius: var(--border-radius);
+      box-shadow: 0 6px 16px var(--shadow);
+    }
+    thead th {
+      padding: 1rem 1.25rem;
+      text-align: left;
+      font-weight: 600;
+      border-top-left-radius: var(--border-radius);
+      border-top-right-radius: var(--border-radius);
+      user-select: none;
+    }
+    tbody tr {
+      background: var(--panel-bg);
+      box-shadow: 0 6px 18px var(--shadow);
+      border-radius: var(--border-radius);
+      transition: background-color var(--transition-speed) ease;
+      cursor: default;
+    }
+    tbody tr:hover {
+      background-color: #f0f4ff;
+      box-shadow: 0 8px 24px var(--hover-glow);
+    }
+    tbody td {
+      padding: 1rem 1.25rem;
+      border-left: 5px solid transparent;
+      border-radius: var(--border-radius);
+      vertical-align: middle;
+    }
+    /* Notepad section */
+    .notepad-section {
+      grid-column: 1 / -1;
+      background: var(--panel-bg);
+      border-radius: var(--border-radius);
+      box-shadow: 0 8px 24px var(--shadow);
+      padding: 1rem 1.5rem;
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+    .notepad-section h2 {
+      margin: 0 0 0.5rem 0;
+      font-weight: 600;
+      color: var(--soft-navy);
+      font-size: 1.4rem;
+      user-select: text;
+    }
+    .notepad-section textarea {
+      width: 100%;
+      resize: none;
+      border-radius: var(--border-radius);
+      border: 1px solid #ccc;
+      padding: 0.75rem 1rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      line-height: 1.4;
+      color: var(--text-color);
+      background: #fafafa;
+      max-height: 20vh;
+      overflow-y: auto;
+      box-shadow: inset 2px 2px 6px rgba(0,0,0,0.05);
+      user-select: text;
+      box-sizing: border-box;
+    }
+    @media (max-width: 720px) {
+      main {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+      }
+      .left-panel {
+        padding: 1.5rem 1.75rem;
+      }
+      .controls {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        max-width: 100%;
+      }
+      button {
+        min-width: 140px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+      }
+      .upload-section {
+        margin-bottom: 1rem;
+      }
+      .right-panel {
+        max-height: 50vh;
+        padding: 1rem 1.25rem;
+      }
+      table {
+        min-width: 0;
+      }
+      .notepad-section {
+        margin-top: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sultan Murat Bilgi Yarışması</h1>
+    <p>Jüri Yarışma Takip Paneli</p>
+  </header>
+  <main>
+    <section class="left-panel" aria-label="Soru ve Kontroller">
+      <section class="upload-section" aria-label="Soru Seçimi">
+        <label for="question-upload" class="upload-label">PNG Soru Yükle veya Seç</label>
+        <input type="file" id="question-upload" accept="image/png" />
+        <img id="question-preview" class="preview" alt="Seçilen soru önizlemesi" hidden />
+      </section>
+      <section class="controls" aria-label="Kontroller">
+        <button id="send-start" type="button">Gönder ve Süreyi Başlat</button>
+        <button id="stop-timer" type="button">Süreyi Bitir</button>
+      </section>
+    </section>
+    <section class="right-panel" aria-label="Gelen Cevaplar">
+      <table id="answers-table" style="width:100%; border-collapse: collapse">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding:8px; border-bottom:1px solid rgba(0,0,0,0.08)">Takım</th>
+            <th style="text-align:left; padding:8px; border-bottom:1px solid rgba(0,0,0,0.08)">Cevap</th>
+            <th style="text-align:left; padding:8px; border-bottom:1px solid rgba(0,0,0,0.08)">Saat</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+    <section class="notepad-section" aria-label="Not Defteri">
+      <h2>🗒️ Not Defteri (Otomatik Kaydedilir)</h2>
+      <textarea id="notepad" placeholder="Cevaplar buraya otomatik kaydedilir..."></textarea>
+    </section>
+  </main>
+  <script type="module" src="shared.js"></script>
+  <script>
+    const uploadInput = document.getElementById('question-upload');
+const previewImg =
+  document.getElementById('question-preview') ||
+  document.querySelector('#qPreview, #preview, #pngPreview, img#preview, .preview img, #selectedImage, #imgPreview');
+ uploadInput.addEventListener('change', () => {
+  const file = uploadInput.files[0];
+  if (file && file.type === 'image/png') {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result; // data:image/png;base64,....
+      window.__KO_LAST_DATAURL__ = dataUrl;   // global sakla
+      previewImg.src = dataUrl;               // önizleme de dataURL olsun
+      previewImg.hidden = false;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    previewImg.src = '';
+    previewImg.hidden = true;
+    window.__KO_LAST_DATAURL__ = null;
+  }
+});
+
+    // Notepad automatic save/load and answer tracking
+    const notepad = document.getElementById('notepad');
+
+    // Load saved notes on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedNotes = localStorage.getItem('juryNotepad');
+      if (savedNotes !== null) {
+        notepad.value = savedNotes;
+      }
+    });
+
+    // Save notes on every input event
+    notepad.addEventListener('input', () => {
+      localStorage.setItem('juryNotepad', notepad.value);
+    });
+  </script>
+
+
+<script>window.__KO_LAST_DATAURL__ = window.__KO_LAST_DATAURL__ || null;</script>
+
+<script>
+// ---- Jüri ↔ Yarışmacı Cihaz‑içi Bağlantı (BroadcastChannel) ----
+const channel = new BroadcastChannel('yarismakanali');
+
+// Elemanları esnek seçicilerle yakala (mevcut id'lere göre çalışır)
+const sendBtn = document.getElementById('send-start');
+const stopBtn = document.getElementById('stop-timer');
+const secondsInput = document.querySelector('#seconds, #duration, input[name="seconds"], input[name="duration"]');
+
+const answersTable = (function(){
+  let t = document.querySelector('#answers-table');
+  if(!t){
+    const right = document.querySelector('.right-panel') || document.body;
+    t = document.createElement('table');
+    t.id = 'answers-table';
+    t.style.width = '100%';
+    t.style.borderCollapse = 'collapse';
+    t.innerHTML = `
+      <thead>
+        <tr>
+          <th style=\"text-align:left; padding:8px; border-bottom:1px solid rgba(0,0,0,0.08)\">Takım</th>
+          <th style=\"text-align:left; padding:8px; border-bottom:1px solid rgba(0,0,0,0.08)\">Cevap</th>
+          <th style=\"text-align:left; padding:8px; border-bottom:1px solid rgba(0,0,0,0.08)\">Saat</th>
+        </tr>
+      </thead>
+      <tbody></tbody>`;
+    right.appendChild(t);
+  }
+  return t;
+})();
+
+function fmtTime(d){
+  const pad = n=> String(n).padStart(2,'0');
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+function clearAnswers(){
+  const tb = answersTable.querySelector('tbody');
+  if(tb) tb.innerHTML = '';
+}
+
+function appendAnswer(team, choice){
+  const tb = answersTable.querySelector('tbody');
+  if(!tb) return;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td style=\"padding:8px; border-bottom:1px dashed rgba(0,0,0,0.06)\">${team}</td>
+    <td style=\"padding:8px; border-bottom:1px dashed rgba(0,0,0,0.06); font-weight:700\">${choice}</td>
+    <td style=\"padding:8px; border-bottom:1px dashed rgba(0,0,0,0.06); color:#667\"\">${fmtTime(new Date())}</td>`;
+  tb.appendChild(tr);
+  // Not defterine de otomatik düş (varsa)
+  const notes = document.querySelector('#notebook, #notes, textarea[data-notebook], textarea#notepad');
+  if(notes){
+    notes.value += `\n${fmtTime(new Date())}  –  ${team} → ${choice}`;
+    try{ localStorage.setItem('jury_notes_auto', notes.value); }catch(e){}
+  }
+}
+
+// Cevapları dinle
+channel.addEventListener('message', (e)=>{
+  const msg = e.data || {};
+  if(msg.type === 'answer'){
+    const { team, choice } = msg.payload || {};
+    if(team && choice) appendAnswer(team, choice);
+  }
+});
+
+// Soru gönder + süre başlat
+if(sendBtn){
+  sendBtn.addEventListener('click', ()=>{
+   const src = (window.__KO_LAST_DATAURL__ && typeof window.__KO_LAST_DATAURL__ === 'string')
+  ? window.__KO_LAST_DATAURL__
+  : (previewImg && previewImg.src ? previewImg.src : '');
+    const duration = parseInt((secondsInput && secondsInput.value) || '30', 10) || 30;
+    if(!src){ alert('Önce bir PNG soru görseli seçin.'); return; }
+    clearAnswers();
+    channel.postMessage({ type: 'newQuestion', payload: { img: src, duration } });
+  });
+}
+
+// Süre bitir → yarışmacı butonlarını kilitle
+if(stopBtn){
+  stopBtn.addEventListener('click', ()=>{
+    channel.postMessage({ type: 'timeEnd', payload: {} });
+  });
+}
+</script>
+</body>
+</html>
