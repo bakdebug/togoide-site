@@ -1,2 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>PDF Reader Pro</title>
 
+<style>
+    body {
+        margin: 0;
+        background: #111;
+        color: white;
+        overflow-y: scroll;
+    }
+
+    #viewerContainer {
+        width: 100%;
+        height: 100vh;
+        overflow-y: scroll;
+        scroll-behavior: smooth;
+    }
+
+    canvas {
+        display: block;
+        margin: 0 auto;
+    }
+
+    #controls {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 999;
+        background: rgba(0,0,0,0.4);
+        padding: 10px;
+        border-radius: 8px;
+        backdrop-filter: blur(8px);
+    }
+
+    button {
+        background: #222;
+        color: white;
+        border: 1px solid #555;
+        padding: 8px 12px;
+        border-radius: 5px;
+        margin-left: 5px;
+    }
+
+    .dark-mode canvas {
+        filter: invert(1) hue-rotate(180deg);
+    }
+</style>
+</head>
+
+<body>
+
+<div id="controls">
+    <button onclick="toggleDarkMode()">Dark Mode</button>
+    <button onclick="pickPDF()">Open PDF</button>
+</div>
+
+<input type="file" id="filePicker" accept=".pdf" style="display:none" />
+<div id="viewerContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.10.111/build/pdf.min.js"></script>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdn.jsdelivr.net/npm/pdfjs-dist@3.10.111/build/pdf.worker.min.js";
+
+let pdfDoc = null;
+let currentPage = 1;
+let lastScrollPos = 0;
+
+// Load PDF
+function loadPDF(file) {
+    const loading = pdfjsLib.getDocument(URL.createObjectURL(file));
+    loading.promise.then(function(pdf) {
+        pdfDoc = pdf;
+
+        // Load saved page if exists
+        const savedPage = localStorage.getItem("savedPDFpage");
+        const savedScroll = localStorage.getItem("savedPDFscroll");
+
+        renderPDF().then(() => {
+            if (savedScroll) {
+                document.getElementById("viewerContainer").scrollTop =
+                    parseFloat(savedScroll);
+            }
+        });
+    });
+}
+
+// Render PDF All Pages
+async function renderPDF() {
+    const viewer = document.getElementById("viewerContainer");
+    viewer.innerHTML = "";
+
+    for (let i = 1; i <= pdfDoc.numPages; i++) {
+        const page = await pdfDoc.getPage(i);
+        const viewport = page.getViewport({ scale: 1.7 });
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        viewer.appendChild(canvas);
+
+        await page.render({
+            canvasContext: ctx,
+            viewport: viewport
+        }).promise;
+    }
+
+    return true;
+}
+
+// Save scroll position continuously
+document.getElementById("viewerContainer").addEventListener("scroll", () => {
+    localStorage.setItem("savedPDFscroll",
+        document.getElementById("viewerContainer").scrollTop
+    );
+});
+
+// Pencil Gestures
+document.body.addEventListener("applepencilgesture", (ev) => {
+
+    if (ev.gestureType === "doubletap") {
+        window.scrollBy(0, window.innerHeight * 0.2);
+    }
+
+    if (ev.gestureType === "squeeze") {
+        window.scrollBy(0, -window.innerHeight * 0.2);
+    }
+
+});
+
+// Dark Mode Toggle
+function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+}
+
+// Open PDF picker
+function pickPDF() {
+    document.getElementById("filePicker").click();
+}
+
+document.getElementById("filePicker")
+.addEventListener("change", (e)=>{
+    loadPDF(e.target.files[0]);
+});
+
+// Auto-open picker on first visit
+if (!localStorage.getItem("pdfLoaded")) {
+    localStorage.setItem("pdfLoaded", "1");
+    pickPDF();
+}
+
+</script>
+</body>
+</html>
 
